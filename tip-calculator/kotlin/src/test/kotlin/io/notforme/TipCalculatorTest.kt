@@ -9,24 +9,63 @@ import kotlin.test.assertNotNull
 
 class TipCalculatorTest {
 
+    data class TestDataSet(val bill: Float, val tipPercentage: Int, val expectedTip: Float)
+
     @Test
-    fun testCalculatorReceiveBillAndTipPercent() {
+    fun `testCalculator given valid bill and tipPercentage then return valid bill instance`() {
         val testDataSet = listOf(
-                Triple(100.0F, 10, 10.0F),
-                Triple(11.25F, 15, 1.69F)
+                TestDataSet(100.0F, 10, 10.0F),
+                TestDataSet(1F, 15, 0.15F),
+                TestDataSet(11.25F, 15, 1.69F)   // round case
         )
 
         testDataSet.forEach {
-            val testBill = it.first
-            val testTipPercentage = it.second
-            val tip = it.third
+            val bill: Bill = TipCalculator().calculate(it.bill, it.tipPercentage)
 
-            val bill: Bill = TipCalculator().calculate(testBill, testTipPercentage)
             assertNotNull(bill)
-            assertEquals(testBill, bill.total - bill.tip)
-            assertEquals(testTipPercentage.toFloat() / 100, bill.tipRate)
-            assertEquals(tip, bill.tip)
-            assertEquals(testBill + tip, bill.total)
+            assertEquals(it.bill, bill.total - bill.tip)
+            assertEquals(it.tipPercentage.toFloat() / 100, bill.tipRate)
+            assertEquals(it.expectedTip, bill.tip)
+            assertEquals(it.bill + it.expectedTip, bill.total)
         }
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `testCalculator given negative bill then throw IllegalArgumentException`() {
+        val testBill = -1F
+        val testTipPercentage = 10
+
+        TipCalculator().calculate(testBill, testTipPercentage)
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `testCalculator given bill is smaller than one then throw IllegalArgumentException`() {
+        val testBill = 0.5F
+        val testTipPercentage = 10
+
+        TipCalculator().calculate(testBill, testTipPercentage)
+    }
+
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `testCalculator given negative tipPercentage then throw IllegalArgumentException`() {
+        val testBill = 10F
+        val testTipPercentage = -5
+
+        TipCalculator().calculate(testBill, testTipPercentage)
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `testCalculator given tipPercentage is smaller than ten then throw IllegalArgumentException`() {
+        val testBill = 10F
+        val testTipPercentage = 5
+
+        TipCalculator().calculate(testBill, testTipPercentage)
+    }
+
+    // TOOD: user input mock???...
+    @Test
+    fun `runCalculator test`() {
+        TipCalculator().runCalculator()
     }
 }

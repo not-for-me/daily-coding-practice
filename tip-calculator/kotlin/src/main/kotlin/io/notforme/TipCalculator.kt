@@ -5,12 +5,39 @@ package io.notforme
 
 class TipCalculator {
     fun calculate(bill: Float, tipPercentage: Int): Bill {
+       validateArgs(bill, tipPercentage)
 
         val tipRate = tipPercentage.toFloat() / 100
         // Round up to 2 decimal
         val tip = Math.round(bill * tipRate * 100) / 100.0F
         val total = bill + tip
         return Bill(total, tip, tipRate)
+    }
+
+    private fun validateArgs(bill: Float, tipPercentage: Int) {
+        if (bill < 1) {
+            throw IllegalArgumentException("invalid bill amount")
+        }
+
+        if (!isValidTipPercentageRange(tipPercentage)) {
+            throw IllegalArgumentException("invalid tip percentage")
+        }
+    }
+
+    private fun isValidTipPercentageRange(tipPercentage: Int) = tipPercentage in 10..15
+
+    fun runCalculator() {
+        print("What is the bill? ")
+        // Double Bang: https://kotlinlang.org/docs/reference/null-safety.html
+        val billAmount = readLine()!!.toFloat()
+
+        print("What is the tip percentage? ")
+        val tipPercentage = readLine()!!.toInt()
+
+        val bill = TipCalculator().calculate(billAmount, tipPercentage)
+
+        println("The tip is ${bill.tip}")
+        println("The total is ${bill.total}")
     }
 }
 
@@ -25,19 +52,6 @@ class TipCalculator {
  * 3. Display result
  */
 fun main(args: Array<String>) {
-  println("Hello Kotin") 
-}
-
-fun debug() {
-     print("What is the bill? ")
-    // Double Bang: https://kotlinlang.org/docs/reference/null-safety.html
-    val billAmount = readLine()!!.toFloat()
-
-    print("What is the tip percentage? ")
-    val tipPercentage = readLine()!!.toInt()
-
-    val bill = TipCalculator().calculate(billAmount, tipPercentage)
-
-    println("The tip is ${bill.tip}")
-    println("The total is ${bill.total}")
+    println("Hello Kotlin")
+    TipCalculator().runCalculator()
 }
