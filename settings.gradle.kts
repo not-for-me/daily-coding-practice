@@ -7,4 +7,7 @@
  * in the user guide at https://docs.gradle.org/5.0/userguide/multi_project_builds.html
  */
 
-rootProject.name = "tip-calculator"
+rootProject.name = "daily-coding-practice"
+
+include("tip-calculator")
+include("hello-world")
