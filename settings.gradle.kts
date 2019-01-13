@@ -11,3 +11,4 @@ rootProject.name = "daily-coding-practice"
 
 include("tip-calculator")
 include("hello-world")
+include("graphs")
